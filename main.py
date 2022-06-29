@@ -1,8 +1,5 @@
 from email.quoprimime import quote
-import discord
-import os
-import requests
-import json
+import discord, os, requests, json, random
 
 # class MyClient(discord.Client):
 #     async def on_ready(self):
@@ -17,6 +14,12 @@ import json
 client = discord.Client()
 
 sad_words = ['sad', 'depresion', 'unhappy', 'angry', 'miserable']
+
+starter = [
+    'cheer up',
+    'hang in there',
+    'you are a great person'
+]
 
 def get_api():
     response = requests.get('https://zenquotes.io/api/random')
@@ -33,8 +36,13 @@ async def on_message(message):
     if message.author == client.user:
         return 
     
-    if message.content.startswith('$inspire'):
+    msg = message.content
+    
+    if msg.startswith('$inspire'):
         quote = get_api()
         await message.channel.send(quote)
+        
+    if any(word in msg in word in sad_words):
+        await message.channel.send(random.choice(starter))
         
 client.run(os.getenv('TOKEN'))
